@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33205.214
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixAvxLib", "MatrixAvxLib\MatrixAvxLib.csproj", "{99603CDB-4EB2-4EF6-AA7C-0977BA3A31E5}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MatrixAvxTest", "MatrixAvxTest\MatrixAvxTest.csproj", "{70DF70FA-1697-4B68-8A72-4CD57D224A68}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{99603CDB-4EB2-4EF6-AA7C-0977BA3A31E5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{99603CDB-4EB2-4EF6-AA7C-0977BA3A31E5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{99603CDB-4EB2-4EF6-AA7C-0977BA3A31E5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{99603CDB-4EB2-4EF6-AA7C-0977BA3A31E5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{70DF70FA-1697-4B68-8A72-4CD57D224A68}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{70DF70FA-1697-4B68-8A72-4CD57D224A68}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{70DF70FA-1697-4B68-8A72-4CD57D224A68}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{70DF70FA-1697-4B68-8A72-4CD57D224A68}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {30954340-71BC-4AD9-A657-6475FC5332FC}
+	EndGlobalSection
+EndGlobal
