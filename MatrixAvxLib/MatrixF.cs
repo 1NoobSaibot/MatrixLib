@@ -1,9 +1,8 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.InteropServices;
+﻿using System.Runtime.InteropServices;
 
 namespace MatrixAvxLib
 {
-	public unsafe struct MatrixF
+	public unsafe class MatrixF
 	{
 		private readonly float* _array;
 		public readonly int Width;
@@ -14,17 +13,23 @@ namespace MatrixAvxLib
 		{
 			if (width < 0)
 			{
-				throw new ArgumentException("Width must be greater than zero");
+				throw new ArgumentException("Width must be greater than or equal to zero");
 			}
 
 			if (height < 0)
 			{
-				throw new ArgumentException("Height must be greater than zero");
+				throw new ArgumentException("Height must be greater than or equal to zero");
 			}
 
 			Width = width;
 			Height = height;
 			_array = (float*)NativeMemory.Alloc((nuint)(width * height * sizeof(float)));
+		}
+
+
+		~MatrixF()
+		{
+			NativeMemory.Free(_array);
 		}
 
 
