@@ -9,7 +9,7 @@ namespace MatrixAvxLib
 		public readonly int Height;
 
 
-		public MatrixF(int width, int height)
+		private MatrixF(int width, int height, bool setZero)
 		{
 			if (width < 0)
 			{
@@ -23,7 +23,26 @@ namespace MatrixAvxLib
 
 			Width = width;
 			Height = height;
-			_array = (float*)NativeMemory.AllocZeroed((nuint)(width * height * sizeof(float)));
+
+			if (setZero)
+			{
+				_array = (float*)NativeMemory.AllocZeroed((nuint)(width * height * sizeof(float)));
+			}
+			else
+			{
+				_array = (float*)NativeMemory.Alloc((nuint)(width * height * sizeof(float)));
+			}
+		}
+
+
+		public MatrixF(int width, int height)
+			: this(width, height, true)
+		{ }
+
+
+		public static MatrixF CreateDirty(int width, int height)
+		{
+			return new MatrixF(width, height, false);
 		}
 
 
@@ -47,18 +66,7 @@ namespace MatrixAvxLib
 					return true;
 				}
 
-				for (int i = 0; i < Width; i++)
-				{
-					for (int j = 0; j < Height; j++)
-					{
-						if (m[i, j] != this[i, j])
-						{
-							return false;
-						}
-					}
-				}
-
-				return true;
+				return _AreEqual(m._array, _array, Width * Height);
 			}
 
 			return false;
@@ -75,7 +83,7 @@ namespace MatrixAvxLib
 		{
 			get
 			{
-				if (i < 0 || i > Width || j < 0 || j > Height)
+				if (i < 0 || i >= Width || j < 0 || j >= Height)
 				{
 					throw new IndexOutOfRangeException();
 				}
@@ -83,12 +91,26 @@ namespace MatrixAvxLib
 			}
 			set
 			{
-				if (i < 0 || i > Width || j < 0 || j > Height)
+				if (i < 0 || i >= Width || j < 0 || j >= Height)
 				{
 					throw new IndexOutOfRangeException();
 				}
 				_array[j * Width + i] = value;
 			}
+		}
+
+
+		private bool _AreEqual(float* p1, float* p2, int length)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				if (p1[i] != p2[i])
+				{
+					return false;
+				}
+			}
+
+			return true;
 		}
 	}
 }
