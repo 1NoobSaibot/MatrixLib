@@ -23,7 +23,7 @@ namespace MatrixAvxLib
 
 			Width = width;
 			Height = height;
-			_array = (float*)NativeMemory.Alloc((nuint)(width * height * sizeof(float)));
+			_array = (float*)NativeMemory.AllocZeroed((nuint)(width * height * sizeof(float)));
 		}
 
 
