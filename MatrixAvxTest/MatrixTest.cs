@@ -97,8 +97,8 @@ namespace MatrixAvxTest
 
 		private float[,] _GetRandomMatrix(int width = 0, int height = 0)
 		{
-			width = width == 0 ? rnd.Next(3, 7) : width;
-			height = height == 0 ? rnd.Next(3, 7) : height;
+			width = width == 0 ? rnd.Next(3, 77) : width;
+			height = height == 0 ? rnd.Next(3, 77) : height;
 
 			var res = new float[width, height];
 

@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 
 namespace MatrixAvxLib
 {
@@ -49,11 +50,17 @@ namespace MatrixAvxLib
 		}
 
 
+		public static implicit operator Vector256<float>*(VectorF v)
+		{
+			return (Vector256<float>*)v._array;
+		}
+
+
 		public float this[int i]
 		{
 			get
 			{
-				if (i < 0 || i > Length)
+				if (i < 0 || i >= Length)
 				{
 					throw new IndexOutOfRangeException();
 				}
@@ -61,7 +68,7 @@ namespace MatrixAvxLib
 			}
 			set
 			{
-				if (i < 0 || i > Length)
+				if (i < 0 || i >= Length)
 				{
 					throw new IndexOutOfRangeException();
 				}
