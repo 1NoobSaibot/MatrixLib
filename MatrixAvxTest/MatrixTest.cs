@@ -55,7 +55,7 @@ namespace MatrixAvxTest
 		{
 			float[,] AO = _GetRandomMatrix();
 			float[,] BO = _GetRandomMatrix(height: AO.GetWidth());
-			float[,] CO = MatrixMathF.Mul(AO, BO);
+			float[,] CO = SimpleMath.Mul(AO, BO);
 
 			MatrixF AN = _CopyAsMatrix(AO);
 			MatrixF BN = _CopyAsMatrix(BO);
@@ -76,7 +76,7 @@ namespace MatrixAvxTest
 			DateTime start = DateTime.Now;
 			for (int i = 0; i < 1; i++)
 			{
-				CO = MatrixMathF.Mul(AO, BO);
+				CO = SimpleMath.Mul(AO, BO);
 			}
 			TimeSpan originalTime = DateTime.Now - start;
 
@@ -97,10 +97,29 @@ namespace MatrixAvxTest
 
 		private float[,] _GetRandomMatrix(int width = 0, int height = 0)
 		{
-			width = width == 0 ? rnd.Next(3, 77) : width;
-			height = height == 0 ? rnd.Next(3, 77) : height;
+			width = width == 0 ? rnd.Next(1, 40) : width;
+			height = height == 0 ? rnd.Next(1, 40) : height;
 
 			var res = new float[width, height];
+
+			for (int i = 0; i < width; i++)
+			{
+				for (int j = 0; j < height; j++)
+				{
+					res[i, j] = rnd.Next(-9, 10);
+				}
+			}
+
+			return res;
+		}
+
+
+		private MatrixF _GetRandomMatrixF(int width = 0, int height = 0)
+		{
+			width = width == 0 ? rnd.Next(1990, 2000) : width;
+			height = height == 0 ? rnd.Next(1990, 2000) : height;
+
+			var res = new MatrixF(width, height);
 
 			for (int i = 0; i < width; i++)
 			{

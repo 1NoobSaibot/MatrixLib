@@ -1,4 +1,5 @@
-﻿using System.Runtime.Intrinsics;
+﻿using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics;
 using System.Runtime.Intrinsics.X86;
 
 namespace MatrixAvxLib
@@ -16,7 +17,14 @@ namespace MatrixAvxLib
 			var Bp = (float*)B;
 			var Cp = (float*)Result;
 
-			for (int i = 0; i < A.Length; i++)
+			int N8 = A.Length - (A.Length % 8);
+			int i = 0;
+			for (; i < N8; i += 8)
+			{
+				Avx2.Store(Cp + i, Avx2.Add(Avx2.LoadVector256(Ap + i), Avx2.LoadVector256(Bp + i)));
+			}
+
+			for (; i < A.Length; i++)
 			{
 				Cp[i] = Ap[i] + Bp[i];
 			}
@@ -38,7 +46,7 @@ namespace MatrixAvxLib
 			int K = A.Width;
 
 			var res = new MatrixF(Width, Heigth);
-			gemm_v1(Heigth, Width, K, (float*)A, (float*)B, (float*)res);
+			gemm_v2_UniversalN(Heigth, Width, K, (float*)A, (float*)B, (float*)res);
 
 			return res;
 		}
@@ -66,7 +74,7 @@ namespace MatrixAvxLib
 			int N = B.Width;
 			int K = A.Length;
 
-			gemm_v1(M, N, K, (float*)A, (float*)B, (float*)C);
+			gemm_v2_UniversalN(M, N, K, (float*)A, (float*)B, (float*)C);
 		}
 
 
@@ -92,113 +100,40 @@ namespace MatrixAvxLib
 			int N = 1;
 			int K = A.Width;
 
-			gemm_v1(M, N, K, (float*)A, (float*)B, (float*)C);
+			gemm_v2_UniversalN(M, N, K, (float*)A, (float*)B, (float*)C);
 		}
 
 
-		private static void gemm_v1(int M, int N, int K, float* A, float* B, float* C) {
-			if ((N & 7) != 0)
-			{
-				gemm_v1_NU(M, N, K, A, B, C);
-			}
-			else if ((N & 15) != 0)
-			{
-				gemm_v2_N8(M, N, K, A, B, C);
-			}
-			else
-			{
-				gemm_v2_N16(M, N, K, A, B, C);
-			}
-		}
-
-
-		private static void gemm_v1_NU(int M, int N, int K, float* A, float* B, float* C)
+		public static void gemm_v2_UniversalN(int M, int N, int K, float* A, float* B, float* C)
 		{
+			int N16 = N - (N % 16);
+			int N8 = N - (N % 8);
+
+			NativeMemory.Fill(C, (nuint)(M * N * sizeof(float)), 0);
 			for (int i = 0; i < M; ++i)
 			{
 				float* c = C + i * N;
 
-				for (int j = 0; j < N; ++j)
-				{
-					c[j] = 0;
-				}
-
 				for (int k = 0; k < K; ++k)
 				{
 					float* b = B + k * N;
-					float a = A[i * K + k];
-					for (int j = 0; j < N; ++j)
-					{
-						c[j] += a * b[j];
-					}
-				}
-			}
-		}
-
-
-		/// <summary>
-		/// TODO: Process Edge and make it Universal
-		/// </summary>
-		/// <param name="M"></param>
-		/// <param name="N">N % 16 == 0</param>
-		/// <param name="K"></param>
-		/// <param name="A"></param>
-		/// <param name="B"></param>
-		/// <param name="C"></param>
-		public static void gemm_v2_N16(int M, int N, int K, float* A, float* B, float* C)
-		{
-			Vector256<float> zero = Vector256.Create<float>(0);
-			// NativeMemory.Fill(C, )
-
-			for (int i = 0; i < M; ++i)
-			{
-				float* c = C + i * N;
-				for (int j = 0; j < N; j += 8) {
-					Avx2.Store(c + j, zero);
-					// _mm256_storeu_ps(c + j, _mm256_setzero_ps());
-				}
-
-				for (int k = 0; k < K; ++k)
-				{
-					float* b = B + k * N;
-					Vector256<float> a = Vector256.Create<float>(A[i * K + k]);
-					// __m256 a = _mm256_set1_ps(A[i * K + k]);
-					for (int j = 0; j < N; j += 16)
+					float aValue = A[i * K + k];
+					Vector256<float> a = Vector256.Create<float>(aValue);
+					int j = 0;
+					for (; j < N16; j += 16)
 					{
 						Avx2.Store(c + j + 0, Fma.MultiplyAdd(a, Avx2.LoadVector256(b + j + 0), Avx2.LoadVector256(c + j + 0)));
-						// _mm256_storeu_ps(c + j + 0, _mm256_fmadd_ps(a, _mm256_loadu_ps(b + j + 0), _mm256_loadu_ps(c + j + 0)));
 						Avx2.Store(c + j + 8, Fma.MultiplyAdd(a, Avx2.LoadVector256(b + j + 8), Avx2.LoadVector256(c + j + 8)));
-						// _mm256_storeu_ps(c + j + 8, _mm256_fmadd_ps(a, _mm256_loadu_ps(b + j + 8), _mm256_loadu_ps(c + j + 8)));
 					}
-				}
-			}
-		}
 
-
-		public static void gemm_v2_N8(int M, int N, int K, float* A, float* B, float* C)
-		{
-			Vector256<float> zero = Vector256.Create<float>(0);
-			// NativeMemory.Fill(C, )
-
-			for (int i = 0; i < M; ++i)
-			{
-				float* c = C + i * N;
-				for (int j = 0; j < N; j += 8) {
-					Avx2.Store(c + j, zero);
-					// _mm256_storeu_ps(c + j, _mm256_setzero_ps());
-				}
-
-				for (int k = 0; k < K; ++k)
-				{
-					float* b = B + k * N;
-					Vector256<float> a = Vector256.Create<float>(A[i * K + k]);
-					// __m256 a = _mm256_set1_ps(A[i * K + k]);
-					for (int j = 0; j < N; j += 8)
+					for (; j < N8; j += 8)
 					{
 						Avx2.Store(c + j + 0, Fma.MultiplyAdd(a, Avx2.LoadVector256(b + j + 0), Avx2.LoadVector256(c + j + 0)));
-						// _mm256_storeu_ps(c + j + 0, _mm256_fmadd_ps(a, _mm256_loadu_ps(b + j + 0), _mm256_loadu_ps(c + j + 0)));
-						// Avx2.Store(c + j + 8, Fma.MultiplyAdd(a, Avx2.LoadVector256(b + j + 8), Avx2.LoadVector256(c + j + 8)));
-						// _mm256_storeu_ps(c + j + 8, _mm256_fmadd_ps(a, _mm256_loadu_ps(b + j + 8), _mm256_loadu_ps(c + j + 8)));
+					}
+
+					for (; j < N; ++j)
+					{
+						c[j] += aValue * b[j];
 					}
 				}
 			}

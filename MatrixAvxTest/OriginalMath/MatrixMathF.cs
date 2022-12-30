@@ -1,6 +1,8 @@
-﻿namespace MatrixAvxTest.OriginalMath
+﻿using MatrixAvxLib;
+
+namespace MatrixAvxTest.OriginalMath
 {
-	public static class MatrixMathF
+	public static class SimpleMath
 	{
 		public static float[,] Add(float[,] a, float[,] b)
 		{
@@ -160,6 +162,18 @@
 		public static int GetHeight(this float[,] a)
 		{
 			return a.GetLength(1);
+		}
+
+
+		public static VectorF Add(VectorF v1, VectorF v2)
+		{
+			VectorF res = new VectorF(v1.Length);
+			for (int i = 0; i < v1.Length; i++)
+			{
+				res[i] = v1[i] + v2[i];
+			}
+
+			return res;
 		}
 	}
 }

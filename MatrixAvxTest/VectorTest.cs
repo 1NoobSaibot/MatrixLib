@@ -10,6 +10,20 @@ namespace MatrixAvxTest
 
 
 		[TestMethod]
+		public void ShouldAddAsLightVersion()
+		{
+			VectorF v1 = _CreateRandomVector();
+			VectorF v2 = _CreateRandomVector(v1.Length);
+			VectorF vActual = new VectorF(v1.Length);
+			MatrixMath.Add(v1, v2, vActual);
+
+			VectorF vExpected = SimpleMath.Add(v1, v2);
+
+			Assert.AreEqual(vExpected, vActual);
+		}
+
+
+		[TestMethod]
 		public void ShouldNotThrowAnErrorWhenIndexIsRight()
 		{
 			VectorF v = new VectorF(4);
@@ -35,35 +49,14 @@ namespace MatrixAvxTest
 		}
 
 
-		private float[,] _GetRandomMatrix(int width = 0, int height = 0)
+		private VectorF _CreateRandomVector(int length = 0)
 		{
-			width = width == 0 ? rnd.Next(3, 7) : width;
-			height = height == 0 ? rnd.Next(3, 7) : height;
+			length = length == 0 ? rnd.Next(1, 20) : length;
+			var res = new VectorF(length);
 
-			var res = new float[width, height];
-
-			for (int i = 0; i < width; i++)
+			for (int i = 0; i < length; i++)
 			{
-				for (int j = 0; j < height; j++)
-				{
-					res[i, j] = rnd.Next(-9, 10);
-				}
-			}
-
-			return res;
-		}
-
-
-		private MatrixF _CopyAsMatrix(float[,] proto)
-		{
-			var res = new MatrixF(proto.GetWidth(), proto.GetHeight());
-
-			for (int i = 0; i < res.Width; i++)
-			{
-				for (int j = 0; j < res.Height; j++)
-				{
-					res[i, j] = proto[i, j];
-				}
+				res[i] = rnd.Next(-9, 10);
 			}
 
 			return res;

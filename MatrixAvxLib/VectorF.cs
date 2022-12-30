@@ -75,5 +75,29 @@ namespace MatrixAvxLib
 				_array[i] = value;
 			}
 		}
+
+
+		public override bool Equals(object? obj)
+		{
+			if (obj is VectorF v)
+			{
+				if (v.Length != Length)
+				{
+					return false;
+				}
+
+				for (int i = 0; i < Length; i++)
+				{
+					if (v[i] != this[i])
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+
+			return false;
+		}
 	}
 }
