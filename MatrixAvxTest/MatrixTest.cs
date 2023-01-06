@@ -53,8 +53,8 @@ namespace MatrixAvxTest
 		[TestMethod]
 		public void ShouldMulAsLightVersion()
 		{
-			float[,] AO = _GetRandomMatrix();
-			float[,] BO = _GetRandomMatrix(height: AO.GetWidth());
+			float[,] AO = _GetRandomMatrix(48, 48);
+			float[,] BO = _GetRandomMatrix(48, 48);
 			float[,] CO = SimpleMath.Mul(AO, BO);
 
 			MatrixF AN = _CopyAsMatrix(AO);
@@ -63,6 +63,15 @@ namespace MatrixAvxTest
 			MatrixF CNActual = MatrixMath.Mul(AN, BN);
 
 			Assert.AreEqual(CNExpected, CNActual);
+		}
+
+
+		[TestMethod]
+		public void ShouldWorkFast()
+		{
+			MatrixF A = _GetRandomMatrixF(1152, 1152);
+			MatrixF B = _GetRandomMatrixF(1152, 1152);
+			MatrixF C = MatrixMath.Mul(A, B);
 		}
 
 

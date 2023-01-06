@@ -13,12 +13,9 @@ namespace MatrixAvxLib
 			Length = length;
 			nuint size = (nuint)(length * sizeof(float));
 
+			_array = (float*)NativeMemory.AlignedAlloc(size, 32);
 			if (setZero) {
-				_array = (float*)NativeMemory.AllocZeroed(size);
-			}
-			else
-			{
-				_array = (float*)NativeMemory.Alloc(size);
+				NativeMemory.Fill(_array, size, 0);
 			}
 		}
 
@@ -29,7 +26,7 @@ namespace MatrixAvxLib
 
 
 		~VectorF() {
-			NativeMemory.Free(_array);
+			NativeMemory.AlignedFree(_array);
 		}
 
 
