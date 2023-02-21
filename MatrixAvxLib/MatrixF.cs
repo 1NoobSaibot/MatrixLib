@@ -50,7 +50,7 @@ namespace MatrixAvxLib
 		}
 
 
-		public override bool Equals(object obj)
+		public override bool Equals(object? obj)
 		{
 			if (obj is MatrixF m)
 			{
@@ -109,6 +109,12 @@ namespace MatrixAvxLib
 			}
 
 			return true;
+		}
+
+
+		public override int GetHashCode()
+		{
+			return base.GetHashCode();
 		}
 	}
 }
