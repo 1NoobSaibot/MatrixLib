@@ -15,7 +15,7 @@ namespace MatrixAvxTest
 			VectorF v1 = _CreateRandomVector();
 			VectorF v2 = _CreateRandomVector(v1.Length);
 			VectorF vActual = new VectorF(v1.Length);
-			MatrixMath.Add(v1, v2, vActual);
+			MatrixMathAvx.Add(v1, v2, vActual);
 
 			VectorF vExpected = SimpleMath.Add(v1, v2);
 

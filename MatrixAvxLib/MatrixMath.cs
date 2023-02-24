@@ -4,7 +4,7 @@ using System.Runtime.Intrinsics.X86;
 
 namespace MatrixAvxLib
 {
-	public static unsafe class MatrixMath
+	public static unsafe class MatrixMathAvx
 	{
 		public static void Add(VectorF A, VectorF B, VectorF Result)
 		{
@@ -31,7 +31,7 @@ namespace MatrixAvxLib
 		}
 
 
-		public static MatrixF Mul(MatrixF A, MatrixF B)
+		public static MatrixAvxF Mul(MatrixAvxF A, MatrixAvxF B)
 		{
 			if (A.Width != B.Height)
 			{
@@ -45,14 +45,14 @@ namespace MatrixAvxLib
 			int Width = B.Width;
 			int K = A.Width;
 
-			var res = new MatrixF(Width, Heigth);
+			var res = new MatrixAvxF(Width, Heigth);
 			gemm(Heigth, Width, K, (float*)A, (float*)B, (float*)res);
 
 			return res;
 		}
 
 
-		public static void Mul (VectorF A, MatrixF B, VectorF C)
+		public static void Mul (VectorF A, MatrixAvxF B, VectorF C)
 		{
 			if (A.Length != B.Height)
 			{
@@ -78,7 +78,7 @@ namespace MatrixAvxLib
 		}
 
 
-		public static void Mul(MatrixF A, VectorF B, VectorF C)
+		public static void Mul(MatrixAvxF A, VectorF B, VectorF C)
 		{
 			if (A.Width != B.Length)
 			{

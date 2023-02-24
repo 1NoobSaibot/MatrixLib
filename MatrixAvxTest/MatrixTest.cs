@@ -12,7 +12,7 @@ namespace MatrixAvxTest
 		[TestMethod]
 		public void ShouldProvideValuesByIndexer()
 		{
-			MatrixF matrix = new MatrixF(100, 200);
+			MatrixAvxF matrix = new MatrixAvxF(100, 200);
 			for (int i = 0; i < matrix.Width; i++)
 			{
 				for (int j = 0; j < matrix.Height; j++)
@@ -34,7 +34,7 @@ namespace MatrixAvxTest
 		[TestMethod]
 		public void ShouldThrowOutOfRangeException()
 		{
-			MatrixF matrix = new MatrixF(10, 20);
+			MatrixAvxF matrix = new MatrixAvxF(10, 20);
 			CheckIndexes(-1, 0);
 			CheckIndexes(11, 0);
 			CheckIndexes(0, -1);
@@ -57,10 +57,10 @@ namespace MatrixAvxTest
 			float[,] BO = _GetRandomMatrix(48, 48);
 			float[,] CO = SimpleMath.Mul(AO, BO);
 
-			MatrixF AN = _CopyAsMatrix(AO);
-			MatrixF BN = _CopyAsMatrix(BO);
-			MatrixF CNExpected = _CopyAsMatrix(CO);
-			MatrixF CNActual = MatrixMath.Mul(AN, BN);
+			MatrixAvxF AN = _CopyAsMatrix(AO);
+			MatrixAvxF BN = _CopyAsMatrix(BO);
+			MatrixAvxF CNExpected = _CopyAsMatrix(CO);
+			MatrixAvxF CNActual = MatrixMathAvx.Mul(AN, BN);
 
 			Assert.AreEqual(CNExpected, CNActual);
 		}
@@ -69,9 +69,9 @@ namespace MatrixAvxTest
 		[TestMethod]
 		public void ShouldWorkFast()
 		{
-			MatrixF A = _GetRandomMatrixF(1152, 1152);
-			MatrixF B = _GetRandomMatrixF(1152, 1152);
-			MatrixF C = MatrixMath.Mul(A, B);
+			MatrixAvxF A = _GetRandomMatrixF(1152, 1152);
+			MatrixAvxF B = _GetRandomMatrixF(1152, 1152);
+			MatrixAvxF C = MatrixMathAvx.Mul(A, B);
 		}
 
 
@@ -89,14 +89,14 @@ namespace MatrixAvxTest
 			}
 			TimeSpan originalTime = DateTime.Now - start;
 
-			MatrixF AN = _CopyAsMatrix(AO);
-			MatrixF BN = _CopyAsMatrix(BO);
-			MatrixF CN;
+			MatrixAvxF AN = _CopyAsMatrix(AO);
+			MatrixAvxF BN = _CopyAsMatrix(BO);
+			MatrixAvxF CN;
 
 			start = DateTime.Now;
 			for (int i = 0; i < 1; i++)
 			{
-				CN = MatrixMath.Mul(AN, BN);
+				CN = MatrixMathAvx.Mul(AN, BN);
 			}
 			TimeSpan newTime = DateTime.Now - start;
 
@@ -123,12 +123,12 @@ namespace MatrixAvxTest
 		}
 
 
-		private MatrixF _GetRandomMatrixF(int width = 0, int height = 0)
+		private MatrixAvxF _GetRandomMatrixF(int width = 0, int height = 0)
 		{
 			width = width == 0 ? rnd.Next(1990, 2000) : width;
 			height = height == 0 ? rnd.Next(1990, 2000) : height;
 
-			var res = new MatrixF(width, height);
+			var res = new MatrixAvxF(width, height);
 
 			for (int i = 0; i < width; i++)
 			{
@@ -142,9 +142,9 @@ namespace MatrixAvxTest
 		}
 
 
-		private MatrixF _CopyAsMatrix(float[,] proto)
+		private MatrixAvxF _CopyAsMatrix(float[,] proto)
 		{
-			var res = new MatrixF(proto.GetWidth(), proto.GetHeight());
+			var res = new MatrixAvxF(proto.GetWidth(), proto.GetHeight());
 
 			for (int i = 0; i < res.Width; i++)
 			{
